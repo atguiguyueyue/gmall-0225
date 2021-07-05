@@ -11,7 +11,6 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.List;
 
 public class CanalClient {
@@ -58,9 +57,16 @@ public class CanalClient {
                         //TODO 14.获取每一行数据集（一个sql所对应的真正数据）
                         List<CanalEntry.RowData> rowDatasList = rowChange.getRowDatasList();
 
-                        hadle(tableName, eventType, rowDatasList);
+                        handle(tableName, eventType, rowDatasList);
                     }
 
+                }
+            }else {
+                System.out.println("没有数据，休息一会");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -75,7 +81,7 @@ public class CanalClient {
      * @param eventType
      * @param rowDatasList
      */
-    private static void hadle(String tableName, CanalEntry.EventType eventType, List<CanalEntry.RowData> rowDatasList) {
+    private static void handle(String tableName, CanalEntry.EventType eventType, List<CanalEntry.RowData> rowDatasList) {
         if ("order_info".equals(tableName)&&CanalEntry.EventType.INSERT.equals(eventType)){
             //1.获取每一条数据
             for (CanalEntry.RowData rowData : rowDatasList) {
